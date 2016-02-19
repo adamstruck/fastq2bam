@@ -1,0 +1,10 @@
+@HD VN:1.4
+@RG ID:WTSI:9399_7 CN:WTSI PL:ILLUMINA PM:Illumina HiSeq 2000
+LB:WGS:WTSI:28085 PI:453 SM:f393ba16-9361-5df4-e040-11ac0d4844e8
+PU:WTSI:9399_7 DT:2013-03-18T00:00:00+00:00
+@CO dcc_project_code:BRCA-UK
+@CO submitter_donor_id:CGP_donor_1199131
+@CO submitter_specimen_id:CGP_specimen_1142534
+@CO submitter_sample_id:PD3851a
+@CO dcc_specimen_type:Primary tumour - solid tissue
+@CO use_cntl:85098796-a2c1-11e3-a743-6c6c38d06053
