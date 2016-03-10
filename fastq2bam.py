@@ -63,7 +63,7 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 def execute(cmd):
     logging.info("RUNNING: %s" % (cmd))
-    print("\nRUNNING...\n", cmd, "\n")
+    print("RUNNING...\n", cmd, "\n")
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
@@ -100,7 +100,7 @@ def fastq2bam():
     # TODO: DT format validation
     RG_parts = ["@RG"]
     for key, value in vars(args).items():
-        if key not in ['fastq_1', 'fastq_2', 'output_file', 'CO'] and value is not None:
+        if key not in ['fastq_1', 'fastq_2', 'output_file', 'map', 'CO'] and value is not None:
             RG_parts.append(":".join([key, value]))
     RG = "\t".join(RG_parts)
 
