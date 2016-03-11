@@ -35,7 +35,7 @@ task fastq2bam {
 		 }
 
 		 runtime {
-		     docker: ""
+		     docker: "fastq2bam"
 		 }
 }
 

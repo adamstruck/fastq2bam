@@ -39,10 +39,20 @@ RUN libtoolize && \
 # Build biobambam2
 WORKDIR /home/biobambam
 RUN autoreconf -i -f && \
-    ./configure --with-libmaus2=${LIBMAUSPREFIX} && \
+    ./configure --with-libmaus2=/usr/local/ && \
     make && \
 		make install
+
+# install python dependencies
+RUN apt-get install -yqq python-pip 
+RUN pip install python-dateutil
 
 # add wrapper script and make it executable
 COPY ./fastq2bam.py /home/fastq2bam.py
 RUN chmod +x  /home/fastq2bam.py
+
+WORKDIR /home/
+
+VOLUME /output/
+
+CMD /bin/bash

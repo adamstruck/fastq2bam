@@ -1,15 +1,15 @@
 {
+  "fastq2bam.fastq2bam.fastq_1": "String",
   "fastq2bam.fastq2bam.fastq_2": "String",
-  "fastq2bam.fastq2bam.PU": "String",
   "fastq2bam.fastq2bam.output_file": "String",
   "fastq2bam.fastq2bam.CN": "String",
-  "fastq2bam.fastq2bam.SM": "String",
-  "fastq2bam.fastq2bam.PM": "String",
-  "fastq2bam.fastq2bam.LB": "String",
   "fastq2bam.fastq2bam.CO": "Array[String]",
-  "fastq2bam.fastq2bam.fastq_1": "String",
-  "fastq2bam.fastq2bam.PI": "String",
-  "fastq2bam.fastq2bam.ID": "String",
-  "fastq2bam.fastq2bam.PL": "String",
   "fastq2bam.fastq2bam.DT": "String"
+  "fastq2bam.fastq2bam.ID": "String",
+  "fastq2bam.fastq2bam.LB": "String",
+  "fastq2bam.fastq2bam.PI": "String",
+  "fastq2bam.fastq2bam.PL": "String",
+  "fastq2bam.fastq2bam.PM": "String",
+	"fastq2bam.fastq2bam.PU": "String",
+  "fastq2bam.fastq2bam.SM": "String",
 }

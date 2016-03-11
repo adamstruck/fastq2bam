@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import argparse
+import dateutil.parser
 import logging
 import os
 import random
@@ -10,6 +11,7 @@ import re
 import shutil
 import string
 import subprocess
+import sys
 
 
 def collect_args():
@@ -33,9 +35,10 @@ def collect_args():
                         help="YYYY-MM-DD'T'HH24:MI:SS.FFTZR")
     parser.add_argument("--LB",
                         help="WGS:<center_name>:<lib_id>")
-    parser.add_argument("--PI", type=int,
+    parser.add_argument("--PI",
                         help="predicted median insert size")
-    parser.add_argument("--PL", default="ILLUMINA",
+    parser.add_argument("--PL",
+                        default="ILLUMINA",
                         choices=["CAPILLARY", "LS454", "ILLUMINA", "SOLID",
                                  "HELICOS", "IONTORRENT", "PACBIO"],
                         help="platform/technology used to produce the reads")
@@ -49,7 +52,8 @@ def collect_args():
                         help="<center_name>:<run>_<lane>[#<tag>]")
     parser.add_argument("--SM",
                         help="uuid for sample")
-    parser.add_argument("--CO", action='append',
+    parser.add_argument("--CO",
+                        action='append',
                         help="provide key value pairs for sample tracking data: \
                         dcc_project_code, submitter_donor_id, \
                         submitter_specimen_id, submitter_sample_id, \
@@ -97,10 +101,19 @@ def fastq2bam():
     # write header
     #############################
     HD = "\t".join(["@HD", "VN:1.4"])
-    # TODO: DT format validation
+
+    # DT format validation
+    try:
+        parsed_DT = dateutil.parser.parse(args.DT)
+        assert parsed_DT.tzinfo is not None
+    except:
+        print("DT field format required: 'YYYY-MM-DD"T"HH24:MI:SS.FFTZR'")
+        print(sys.exc_info()[0])
+        raise
+
     RG_parts = ["@RG"]
     for key, value in vars(args).items():
-        if key not in ['fastq_1', 'fastq_2', 'output_file', 'map', 'CO'] and value is not None:
+        if key not in ['fastq_1', 'fastq_2', 'output_file', 'CO'] and value is not None:
             RG_parts.append(":".join([key, value]))
     RG = "\t".join(RG_parts)
 
@@ -138,6 +151,11 @@ def fastq2bam():
     execute(cmd)
 
 if __name__ == "__main__":
-    fastq2bam()
-    # cleanup
-    shutil.rmtree(tmp_path)
+    try:
+        fastq2bam()
+    except:
+        print(sys.exc_info()[0])
+        raise
+    finally:
+        # cleanup
+        shutil.rmtree(tmp_path)
