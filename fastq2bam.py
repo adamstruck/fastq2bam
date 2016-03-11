@@ -87,15 +87,16 @@ def fastq2bam():
                                   "",
                                   os.path.basename(args.fastq_1)) + ".bam"
 
+    output_dir = os.path.dirname(os.path.abspath(args.output_file))
+
     # setup tmp output directory to store intermediate files
     tmp_output_dir = id_generator()
-    output_dir = os.path.dirname(os.path.abspath(args.output_file))
     global tmp_path
     tmp_path = os.path.join(output_dir, tmp_output_dir)
     if os.path.isdir(tmp_path):
         pass
     else:
-        os.mkdir(tmp_path)
+        execute("mkdir -p {0}".format(tmp_path))
 
     #############################
     # write header
@@ -107,7 +108,7 @@ def fastq2bam():
         parsed_DT = dateutil.parser.parse(args.DT)
         assert parsed_DT.tzinfo is not None
     except:
-        print("DT field format required: 'YYYY-MM-DD"T"HH24:MI:SS.FFTZR'")
+        print("DT field format required: 'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
         print(sys.exc_info()[0])
         raise
 
