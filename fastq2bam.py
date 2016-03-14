@@ -66,28 +66,14 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 def execute(cmd):
     print("RUNNING...\n", cmd, "\n")
-    process = subprocess.Popen(shlex.split(cmd),
-                               shell=False,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-
-    while True:
-        nextline = process.stdout.readline()
-        if nextline == '' and process.poll() is not None:
-            break
-        sys.stdout.write(nextline)
-        sys.stdout.flush()
-
-    if process.returncode == 0:
-        return process.returncode
-    else:
-        raise RuntimeError(
-            "\n".join(
-                ["",
-                 "[COMMAND]        {0}".format(cmd),
-                 "[STDERR]         {0}".format(process.communicate()[1]),
-                 "[STATUS CODE]    {0}".format(process.returncode)]
-            ))
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if stderr is not None:
+        print(stderr)
+    if stdout is not None:
+        print(stdout)
+    return p.returncode
 
 
 def fastq2bam():
