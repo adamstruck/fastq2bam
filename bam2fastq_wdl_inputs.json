@@ -1,0 +1,4 @@
+{
+  "bam2fastq.bam2fastq.bam": "String",
+  "bam2fastq.bam2fastq.output_dir": "String"
+}
