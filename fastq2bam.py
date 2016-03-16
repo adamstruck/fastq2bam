@@ -7,6 +7,7 @@ import dateutil.parser
 import os
 import random
 import re
+import shlex
 import shutil
 import string
 import subprocess
@@ -24,7 +25,12 @@ def collect_args():
     parser.add_argument("--fastq_2",
                         required=True,
                         help="fastq mate file")
-    parser.add_argument("--output-file", dest="output_file",
+    parser.add_argument("--output-dir",
+                        dest="output_dir",
+                        default="./",
+                        help="unaligned BAM output")
+    parser.add_argument("--output-filename",
+                        dest="output_filename",
                         help="unaligned BAM output")
     parser.add_argument("--ID",
                         help="<centre_name>:<unique_text>")
@@ -66,26 +72,43 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 def execute(cmd):
     print("RUNNING...\n", cmd, "\n")
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
+    process = subprocess.Popen(cmd,
+                               shell=True,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+
+    while True:
+        nextline = process.stdout.readline()
+        if nextline == '' and process.poll() is not None:
+            break
+        sys.stdout.write(nextline)
+        sys.stdout.flush()
+
+    stderr = process.communicate()[1]
     if stderr is not None:
         print(stderr)
-    if stdout is not None:
-        print(stdout)
-    return p.returncode
+    if process.returncode != 0:
+        print("[WARNING] command: {0} exited with code: {1}".format(
+            cmd, process.returncode
+        ))
+    return process.returncode
 
 
 def fastq2bam():
     parser = collect_args()
     args = parser.parse_args()
 
-    if args.output_file is None:
-        args.output_file = re.sub("(\_[0-9]\.fastq|\_[0-9]\.fq|)",
-                                  "",
-                                  os.path.basename(args.fastq_1)) + ".bam"
+    if args.output_filename is None:
+        output_filename = re.sub("(\_[0-9]\.fastq|\.fastq|\_[0-9]\.fq|\.fq)",
+                                 "",
+                                 os.path.basename(args.fastq_1)) + ".bam"
+    else:
+        output_filename = os.path.basename(args.output_filename)
 
-    output_dir = os.path.dirname(os.path.abspath(args.output_file))
+    if os.path.isdir(args.output_dir):
+        output_dir = os.path.abspath(args.output_dir)
+    else:
+        execute("mkdir -p {0}".format(args.output_dir))
 
     # setup tmp output directory to store intermediate files
     tmp_output_dir = id_generator()
@@ -105,9 +128,9 @@ def fastq2bam():
     try:
         parsed_DT = dateutil.parser.parse(args.DT)
         assert parsed_DT.tzinfo is not None
-    except:
+    except Exception as e:
         print("DT field format required: 'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
-        print(sys.exc_info()[0])
+        print(e)
         raise
 
     RG_parts = ["@RG"]
@@ -146,14 +169,17 @@ def fastq2bam():
     # style header
     #############################
     base_cmd = "cat %s | bamreset exclude=QCFAIL,SECONDARY,SUPPLEMENTARY resetheadertext=%s md5=1 md5filename=%s.md5 > %s"
-    cmd = base_cmd % (tmp_bam, tmp_header_file, args.output_file, args.output_file)
+    cmd = base_cmd % (tmp_bam,
+                      tmp_header_file,
+                      os.path.join(output_dir, output_filename),
+                      os.path.join(output_dir, output_filename))
     execute(cmd)
 
 if __name__ == "__main__":
     try:
         fastq2bam()
-    except:
-        print(sys.exc_info()[0])
+    except Exception as e:
+        print(e)
         raise
     finally:
         # cleanup
