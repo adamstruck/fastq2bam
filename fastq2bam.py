@@ -7,7 +7,6 @@ import dateutil.parser
 import os
 import random
 import re
-import shlex
 import shutil
 import string
 import subprocess
@@ -94,31 +93,7 @@ def execute(cmd):
     return process.returncode
 
 
-def fastq2bam():
-    parser = collect_args()
-    args = parser.parse_args()
-
-    if args.output_filename is None:
-        output_filename = re.sub("(\_[0-9]\.fastq|\.fastq|\_[0-9]\.fq|\.fq)",
-                                 "",
-                                 os.path.basename(args.fastq_1)) + ".bam"
-    else:
-        output_filename = os.path.basename(args.output_filename)
-
-    if os.path.isdir(args.output_dir):
-        output_dir = os.path.abspath(args.output_dir)
-    else:
-        execute("mkdir -p {0}".format(args.output_dir))
-
-    # setup tmp output directory to store intermediate files
-    tmp_output_dir = id_generator()
-    global tmp_path
-    tmp_path = os.path.join(output_dir, tmp_output_dir)
-    if os.path.isdir(tmp_path):
-        pass
-    else:
-        execute("mkdir -p {0}".format(tmp_path))
-
+def fastq2bam(args, tmp_path, output_dir, output_filename):
     #############################
     # write header
     #############################
@@ -175,12 +150,37 @@ def fastq2bam():
                       os.path.join(output_dir, output_filename))
     execute(cmd)
 
-if __name__ == "__main__":
+
+def main():
+    parser = collect_args()
+    args = parser.parse_args()
+
+    if args.output_filename is None:
+        output_filename = re.sub("(\_[0-9]\.fastq|\.fastq|\_[0-9]\.fq|\.fq)",
+                                 "",
+                                 os.path.basename(args.fastq_1)) + ".bam"
+    else:
+        output_filename = os.path.basename(args.output_filename)
+
+    if os.path.isdir(args.output_dir):
+        output_dir = os.path.abspath(args.output_dir)
+    else:
+        execute("mkdir -p {0}".format(args.output_dir))
+
+    # setup tmp output directory to store intermediate files
+    tmp_output_dir = id_generator()
+    tmp_path = os.path.join(output_dir, tmp_output_dir)
+    if not os.path.isdir(tmp_path):
+        execute("mkdir -p {0}".format(tmp_path))
+
     try:
-        fastq2bam()
+        fastq2bam(args, tmp_path, output_dir, output_filename)
     except Exception as e:
         print(e)
         raise
     finally:
         # cleanup
         shutil.rmtree(tmp_path)
+
+if __name__ == "__main__":
+    main()
