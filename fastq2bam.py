@@ -179,10 +179,9 @@ def main():
     else:
         output_filename = os.path.basename(args.output_filename)
 
-    if os.path.isdir(args.output_dir):
-        output_dir = os.path.abspath(args.output_dir)
-    else:
-        execute("mkdir -p {0}".format(args.output_dir))
+    output_dir = os.path.abspath(args.output_dir)
+    if not os.path.isdir(output_dir):
+        execute("mkdir -p {0}".format(output_dir))
 
     # setup tmp output directory to store intermediate files
     tmp_output_dir = id_generator()
