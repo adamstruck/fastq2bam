@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import argparse
 import dateutil.parser
+import pytz
 import os
 import random
 import re
@@ -93,6 +94,18 @@ def execute(cmd):
     return process.returncode
 
 
+def to_iso8601(time_string):
+    parsed_time = dateutil.parser.parse(time_string)
+    # add timezone info
+    if parsed_time.tzinfo is None:
+        # add +00:00 as tzinfo
+        parsed_time.replace(tz=pytz.timezone('UTC'))
+    # remove microseconds
+    if parsed_time.microsecond != 0:
+        parsed_time.replace(microsecond=0)
+    return parsed_time.isoformat()
+
+
 def fastq2bam(args, tmp_path, output_dir, output_filename):
     #############################
     # write header
@@ -101,16 +114,20 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
 
     # DT format validation
     try:
-        parsed_DT = dateutil.parser.parse(args.DT)
-        assert parsed_DT.tzinfo is not None
+        # convert to proper format if possible
+        args.DT = to_iso8601(args.DT)
     except Exception as e:
-        print("DT field format required: 'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
+        print("[WARNING]  DT field must be ISO 8061 compliant: \
+        'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
         print(e)
         raise
 
     RG_parts = ["@RG"]
     for key, value in vars(args).items():
-        if key not in ['fastq_1', 'fastq_2', 'output_file', 'CO'] and value is not None:
+        # all possible RG groups
+        RG_keys = ['ID', 'CN', 'DS', 'DT', 'FO', 'KS', 'LB', 'PG', 'PI', 'PL',
+                   'PM', 'PU', 'SM']
+        if key in RG_keys and value is not None:
             RG_parts.append(":".join([key, value]))
     RG = "\t".join(RG_parts)
 
