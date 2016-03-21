@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-
+"""
+Convert fastq files to unaligned BAM file with PCAWG style header using
+biobambam2
+"""
 from __future__ import print_function
 
 import argparse
@@ -21,10 +24,10 @@ def collect_args():
     )
     parser.add_argument("--fastq_1",
                         required=True,
-                        help="fastq file")
+                        help="fastq file to be converted to BAM")
     parser.add_argument("--fastq_2",
                         required=True,
-                        help="fastq mate file")
+                        help="fastq mate file to be converted to BAM")
     parser.add_argument("--output-dir",
                         dest="output_dir",
                         default="./",
@@ -151,7 +154,6 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
     # convert fastq to bam
     #############################
     tmp_bam = os.path.join(tmp_path, "tmp.bam")
-
     base_cmd = "fastqtobam I=%s I=%s md5=1 md5filename=%s.md5  > %s"
     cmd = base_cmd % (args.fastq_1, args.fastq_2, tmp_bam, tmp_bam)
     execute(cmd)

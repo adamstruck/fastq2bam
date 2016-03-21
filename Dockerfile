@@ -84,7 +84,8 @@ RUN autoreconf -i -f && \
     make install 
 
 # install python dependencies
-RUN pip install python-dateutil
+RUN apt-get update && apt-get install -y python-dateutil
+RUN pip install pytz
 
 # add wrapper script and make it executable
 COPY ./fastq2bam.py ${HOME}/fastq2bam.py
