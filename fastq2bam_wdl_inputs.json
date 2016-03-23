@@ -1,7 +1,9 @@
 {
   "fastq2bam.fastq2bam.fastq_1": "String",
   "fastq2bam.fastq2bam.fastq_2": "String",
-  "fastq2bam.fastq2bam.output_file": "String",
+  "fastq2bam.fastq2bam.is_gzipped": "String",
+  "fastq2bam.fastq2bam.output_filename": "String",
+  "fastq2bam.fastq2bam.output_dir": "String",
   "fastq2bam.fastq2bam.CN": "String",
   "fastq2bam.fastq2bam.CO": "Array[String]",
   "fastq2bam.fastq2bam.DT": "String"
