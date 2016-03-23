@@ -116,14 +116,15 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
     HD = "\t".join(["@HD", "VN:1.4"])
 
     # DT format validation
-    try:
-        # convert to proper format if possible
-        args.DT = to_iso8601(args.DT)
-    except Exception as e:
-        print("[WARNING]  DT field must be ISO 8061 compliant: \
-        'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
-        print(e)
-        raise
+    if args.DT is not None:
+        try:
+            # convert to proper format if possible
+            args.DT = to_iso8601(args.DT)
+        except Exception as e:
+            print("[WARNING]  DT field must be ISO 8061 compliant: \
+            'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
+            print(e)
+            raise
 
     RG_parts = ["@RG"]
     for key, value in vars(args).items():
