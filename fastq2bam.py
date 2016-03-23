@@ -28,6 +28,11 @@ def collect_args():
     parser.add_argument("--fastq_2",
                         required=True,
                         help="fastq mate file to be converted to BAM")
+    parser.add_argument("--is-gz",
+                        dest="is_gz",
+                        default="True",
+                        choices=["True", "False"],
+                        help="input fastq files are gzipped")
     parser.add_argument("--output-dir",
                         dest="output_dir",
                         default="./",
@@ -151,8 +156,11 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
     # convert fastq to bam
     #############################
     tmp_bam = os.path.join(tmp_path, "tmp.bam")
-    base_cmd = "fastqtobam I=%s I=%s md5=1 md5filename=%s.md5  > %s"
-    cmd = base_cmd % (args.fastq_1, args.fastq_2, tmp_bam, tmp_bam)
+    base_cmd = "fastqtobam I=%s I=%s md5=1 md5filename=%s.md5  gz=%d> %s"
+    if args.is_gz == "True":
+        cmd = base_cmd % (args.fastq_1, args.fastq_2, tmp_bam, 1, tmp_bam)
+    else:
+        cmd = base_cmd % (args.fastq_1, args.fastq_2, tmp_bam, 0, tmp_bam)
     execute(cmd)
 
     #############################
