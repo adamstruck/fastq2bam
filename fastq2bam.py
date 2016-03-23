@@ -121,8 +121,8 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
             # convert to proper format if possible
             args.DT = to_iso8601(args.DT)
         except Exception as e:
-            print("[WARNING]  DT field must be ISO 8061 compliant: \
-            'YYYY-MM-DD\"T\"HH24:MI:SS.FFTZR'")
+            print("[WARNING]  DT field must be able to be expressed as an \
+            ISO 8061 compliant datetime: 'YYYY-MM-DD\"T\"HH24:MI:SS'")
             print(e)
             raise
 
@@ -135,9 +135,6 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
             RG_parts.append(":".join([key, value]))
     RG = "\t".join(RG_parts)
 
-    # TODO: @CO input validation
-    # if len(args.CO) != 6:
-    #     raise ValueError("You must provide all sample tracking data")
     if args.CO is not None:
         CO = "\n".join(["\t".join(["@CO", key_val]) for key_val in args.CO])
     else:
