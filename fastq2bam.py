@@ -102,7 +102,7 @@ def to_iso8601(time_string):
     # add timezone info
     if parsed_time.tzinfo is None:
         # add +00:00 as tzinfo
-        parsed_time.replace(tz=pytz.timezone('UTC'))
+        parsed_time.replace(tzinfo=pytz.timezone('UTC'))
     # remove microseconds
     if parsed_time.microsecond != 0:
         parsed_time.replace(microsecond=0)
