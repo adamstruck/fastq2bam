@@ -118,12 +118,11 @@ def fastq2bam(args, tmp_path, output_dir, output_filename):
     # DT format validation
     if args.DT is not None:
         try:
-            # convert to proper format if possible
+            # try to convert DT to ISO 8061 formatted datetime
             args.DT = to_iso8601(args.DT)
-        except Exception as e:
-            print("[WARNING]  DT field must be able to be expressed as an \
-            ISO 8061 compliant datetime: 'YYYY-MM-DD\"T\"HH24:MI:SS'")
-            print(e)
+        except Exception:
+            print("[WARNING]  DT field was not able to be expressed as an " +
+                  "ISO 8061 compliant datetime: 'YYYY-MM-DD\"T\"HH24:MI:SS'")
             raise
 
     RG_parts = ["@RG"]
@@ -191,8 +190,7 @@ def main():
 
     try:
         fastq2bam(args, tmp_path, output_dir, output_filename)
-    except Exception as e:
-        print(e)
+    except Exception:
         raise
     finally:
         # cleanup
