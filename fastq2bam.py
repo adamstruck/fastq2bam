@@ -93,11 +93,8 @@ def collect_args():
                                  "HELICOS", "IONTORRENT", "PACBIO"],
                         help="Platform/technology used to produce the reads")
     parser.add_argument("--PM",
-                        choices=["Illumina Genome Analyzer II",
-                                 "Illumina HiSeq",
-                                 "Illumina HiSeq 2000",
-                                 "Illumina HiSeq 2500"],
-                        help="Platform model")
+                        help="Platform model Ex: 'Illumina Genome Analyzer II', \
+                        'Illumina HiSeq 2000', 'Illumina HiSeq 2500'")
     parser.add_argument("--PU",
                         help="Platform unit. Ex: '<center_name>:<run>_<lane>[#<tag>]'")
     parser.add_argument("--SM",
