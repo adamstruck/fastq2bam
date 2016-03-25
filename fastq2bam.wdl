@@ -2,6 +2,7 @@ task fastq2bam {
      String fastq_1
      String? fastq_2
      String is_gzipped
+     String namescheme
      String? checkquality
      String? qualityoffset
      Int? qualitymax
@@ -26,6 +27,7 @@ task fastq2bam {
              --fastq_1 ${fastq_1} \
              ${'--fastq_2 ' + fastq_2} \
              --is-gz ${is_gzipped} \
+             --namescheme ${namescheme} \
              ${'--checkquality ' + checkquality} \
              ${'--qualityoffset ' + qualityoffset} \
              ${'--qualitymax ' + qualitymax} \
@@ -47,11 +49,11 @@ task fastq2bam {
      }
 
      output {
-        String unaligned_bam = "${output_file}"
+        String unaligned_bam = "${output_dir}/${output_filename}"
      }
 
      runtime {
-         docker: "biobambam"
+         docker: "biobambam2"
      }
 }
 

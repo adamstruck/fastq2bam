@@ -1,3 +1,4 @@
+{
   "fastq2bam.fastq2bam.CN": "(optional) String",
   "fastq2bam.fastq2bam.DS": "(optional) String",
   "fastq2bam.fastq2bam.DT": "(optional) String"
@@ -10,15 +11,14 @@
   "fastq2bam.fastq2bam.PL": "String",
   "fastq2bam.fastq2bam.PM": "(optional) String",
   "fastq2bam.fastq2bam.PU": "(optional) String",
-  "fastq2bam.fastq2bam.SM": "String"
+  "fastq2bam.fastq2bam.SM": "String",
   "fastq2bam.fastq2bam.checkquality": "(optional) String",
   "fastq2bam.fastq2bam.fastq_1": "String",
   "fastq2bam.fastq2bam.fastq_2": "(optional) String",
-  "fastq2bam.fastq2bam.is_gzipped": "String",
+  "fastq2bam.fastq2bam.is_gzipped": "Int",
   "fastq2bam.fastq2bam.namescheme": "String",
   "fastq2bam.fastq2bam.output_dir": "(optional) String",
   "fastq2bam.fastq2bam.output_filename": "(optional) String",
   "fastq2bam.fastq2bam.qualitymax": "(optional) Int",
-  "fastq2bam.fastq2bam.qualityoffset": "(optional) String",
-{
+  "fastq2bam.fastq2bam.qualityoffset": "(optional) String"
 }
