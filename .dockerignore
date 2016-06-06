@@ -1,2 +1,5 @@
-test_data/
-*wdl*
+test_data/*
+praduk_job_generation/*
+docker_tarballs/*
+*wdl
+*json
